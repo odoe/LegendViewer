@@ -1,0 +1,33 @@
+h1. LegendViewer (Flexviewer Widget): A Legend and Manager component for use with the "ESRI Flex API":http://help.arcgis.com/en/webapi/flex/index.html.
+
+This is a tool that I needed for my day to workflow.
+It is an update to the LegendManager tool that is part of my FlexMapTools.
+Once I have worked on this tool a little more, I will replace that component.
+This tool utilizes the new Legend REST endpoint that was added in Service Pack 1 to ESRI ArcGIS Server.
+
+This tool also makes extensive use of "AS3Signals":https://github.com/robertpenner/as3-signals for communication between its various components.
+You will need to download AS3Signals into your project to use this component.
+
+This widget is structured differently from other widgets I have developed.
+My goal is to stress the fact that widget components need not rely on the Flexviewer framework and can be developed independently of Flexviewer.
+At most you just need to inject some parameters into your component from Flexviewer and it should work without issue.
+There should be no need to make any getInstance() calls from within your component. This means you can also load your components into any standalone application.
+If you need your widget to communicate with the Flexviewer framework or other widgets, you are better off injecting an instance of the dispatcher into your component.
+
+For more information about the ESRI Flex API, please visit http://help.arcgis.com/en/webapi/flex/index.html
+
+h3. Disclaimer
+Because ESRI has a download page for their Flex API where they ask that you register, I will not be providing the ESRI Flex API swc file.
+Please visit the "ESRI Flex API dowload page":http://resources.arcgis.com/content/arcgis-flex-api-how-to-download
+
+I am not employed or affiliated with ESRI beyond being a user of their products.
+
+Enjoy.
+
+h2. License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
