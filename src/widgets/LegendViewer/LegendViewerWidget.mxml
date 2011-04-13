@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<viewer:BaseWidget xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:viewer="com.esri.viewer.*"
+				   layout="absolute"
+				   creationComplete="basewidget_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+
+			import net.odoe.flexmaptools.components.LegendViewer;
+
+			protected function basewidget_creationCompleteHandler(event:FlexEvent):void
+			{
+				var legend:LegendViewer=new LegendViewer();
+				legend.percentHeight=100;
+				legend.percentWidth=100;
+				legend.map=map;
+				wTemplate.addElement(legend);
+			}
+		]]>
+	</fx:Script>
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace viewer "com.esri.viewer.*";
+		@namespace comp "net.odoe.flexmaptools.components.*";
+		
+		comp|LegendViewer {
+			skinClass: ClassReference("net.odoe.flexmaptools.components.skins.LegendViewSkin");
+		}
+	</fx:Style>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<viewer:WidgetTemplate id="wTemplate">
+
+	</viewer:WidgetTemplate>
+</viewer:BaseWidget>
