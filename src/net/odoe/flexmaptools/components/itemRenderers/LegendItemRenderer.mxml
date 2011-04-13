@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				autoDrawBackground="false">
+	<fx:Script>
+		<![CDATA[
+			import net.odoe.flexmaptools.components.vo.LegendItem;
+
+			import org.osflash.signals.natives.NativeSignal;
+
+			private var legend:LegendItem;
+
+			override public function set data(value:Object):void
+			{
+				super.data=value;
+				legend=data as LegendItem;
+				lblItem.text=legend.label;
+				loadImage();
+			}
+
+			private function loadImage():void
+			{
+				var loader:Loader=new Loader();
+				var lc:LoaderContext=new LoaderContext(false);
+				var loaderSignal:NativeSignal=new NativeSignal(loader.contentLoaderInfo, Event.COMPLETE, Event);
+				loaderSignal.addOnce(onImageLoaded);
+				loader.loadBytes(legend.imageData, lc);
+			}
+
+			private function onImageLoaded(e:Event):void
+			{
+				bmp.smooth=true;
+				bmp.source=e.currentTarget.content;
+			}
+		]]>
+	</fx:Script>
+
+	<s:Group left="25"
+			 width="100%"
+			 right="5">
+		<s:layout>
+			<s:HorizontalLayout gap="5"
+								verticalAlign="middle"/>
+		</s:layout>
+		<s:BitmapImage id="bmp"/>
+		<s:Label id="lblItem"/>
+	</s:Group>
+</s:ItemRenderer>
