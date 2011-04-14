@@ -15,7 +15,7 @@ package net.odoe.flexmaptools.components
 	
 	import spark.components.DataGroup;
 	import spark.components.SkinnableContainer;
-
+	
 	public class LegendViewer extends SkinnableContainer
 	{
 		public function LegendViewer()
@@ -23,47 +23,65 @@ package net.odoe.flexmaptools.components
 			super();
 			layers=new ArrayCollection();
 		}
-
+		
 		[SkinPart(required="true")]
 		/**
 		 * Required List that must be in Skin
 		 * @default
 		 */
 		public var legendDataGroup:DataGroup;
-
+		
 		private var _map:Map;
-
+		
 		private var layerAdded:NativeSignal;
 		private var layerRemoved:NativeSignal;
-
+		
 		protected var layers:ArrayCollection;
-
+		
+		/**
+		 * Regular Expression to prevent random GraphicsLayers from being added to List.
+		 * Using regular expression, because there may be cases where you want
+		 * a user to control a GraphicsLayer, in which case you should give it a
+		 * distinctive name.
+		 * @default
+		 */
+		protected var reg1:RegExp = /GraphicsLayer\w/;
+		
+		/**
+		 * Regular Expression to prevent random FeatureLayers from being added to List.
+		 * Using regular expression, because there may be cases where you want
+		 * a user to control a FeatureLayer, in which case you should give it a
+		 * distinctive name.
+		 * @default
+		 */
+		protected var reg2:RegExp = /FeatureLayer\w/;
+		
 		public function set map(value:Map):void
 		{
 			_map=value;
-
+			
 			extractLayers();
-
+			
 			layerAdded=new NativeSignal(_map, MapEvent.LAYER_ADD, MapEvent);
 			layerAdded.add(onLayerAdded);
-
+			
 			layerRemoved=new NativeSignal(_map, MapEvent.LAYER_REMOVE, MapEvent);
 			layerRemoved.add(onLayerRemoved);
 		}
-
+		
 		protected override function partAdded(partName:String, instance:Object):void
 		{
 			super.partAdded(partName, instance);
 			if (instance == legendDataGroup)
 				legendDataGroup.dataProvider=layers;
 		}
-
+		
 		private function onLayerAdded(e:MapEvent):void
 		{
 			// need to wait for the layer to fully load or some values will be null
 			waitForLayer(e.layer);
 		}
-
+		
 		private function onLayerRemoved(e:MapEvent):void
 		{
 			for each (var p:ParentLayerItem in layers)
@@ -75,20 +93,28 @@ package net.odoe.flexmaptools.components
 				}
 			}
 		}
-
+		
 		private function extractLayers():void
 		{
 			for each (var lyr:Layer in _map.layers)
 			{
-				if (!lyr.map)
+				if (isValidLayer(lyr.name))
 				{
-					waitForLayer(lyr);
+					if (!lyr.map)
+					{
+						waitForLayer(lyr);
+					}
+					else
+						extractLayerData(lyr);
 				}
-				else
-					extractLayerData(lyr);
 			}
 		}
-
+		
+		private function isValidLayer(name:String):Boolean
+		{
+			return (!reg1.test(name) && !reg2.test(name));
+		}
+		
 		private function waitForLayer(lyr:Layer):void
 		{
 			var lyrSignal:NativeSignal=new NativeSignal(lyr, LayerEvent.LOAD, LayerEvent);
@@ -97,8 +123,8 @@ package net.odoe.flexmaptools.components
 				extractLayerData(lyr);
 			});
 		}
-
-
+		
+		
 		private function extractLayerData(lyr:Layer):void
 		{
 			if (lyr is ArcGISDynamicMapServiceLayer)
