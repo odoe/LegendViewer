@@ -35,6 +35,13 @@ package net.odoe.flexmaptools.components
             sortField.numeric = true;
             sort = new Sort();
             sort.fields = [sortField];
+            sortLayerList();
+        }
+        
+        private function sortLayerList():void
+        {
+            layers.sort = sort;
+            layers.refresh();
         }
         
         [SkinPart(required="true")]
@@ -165,7 +172,6 @@ package net.odoe.flexmaptools.components
         {
             item.sortOrder = findSortId(item.layer.id);
             layers.addItem(item);
-            sortLayerList();
         }
         
         private function findSortId(layerId:String):int
@@ -179,12 +185,6 @@ package net.odoe.flexmaptools.components
                 }
             }
             return 0;
-        }
-        
-        private function sortLayerList():void
-        {
-            layers.sort = sort;
-            layers.refresh();
         }
     }
 }
