@@ -2,7 +2,7 @@ package net.odoe.flexmaptools.components.vo
 {
 	import com.esri.ags.layers.ArcGISDynamicMapServiceLayer;
 	import com.esri.ags.layers.Layer;
-
+	
 	import flash.events.EventDispatcher;
 
 	public class LayerItem extends EventDispatcher
@@ -23,7 +23,7 @@ package net.odoe.flexmaptools.components.vo
 		public function toggleVisible(value:Boolean):void
 		{
 			this.visible=value;
-			if (value)
+			if (value && !isInVisibleLayers())
 			{
 				ArcGISDynamicMapServiceLayer(this.parentLayer).visibleLayers.addItem(this.layerId);
 			}
@@ -33,5 +33,10 @@ package net.odoe.flexmaptools.components.vo
 				ArcGISDynamicMapServiceLayer(this.parentLayer).visibleLayers.removeItemAt(i);
 			}
 		}
+        
+        private function isInVisibleLayers():Boolean
+        {
+            return ArcGISDynamicMapServiceLayer(this.parentLayer).visibleLayers.contains(this.layerId);
+        }
 	}
 }

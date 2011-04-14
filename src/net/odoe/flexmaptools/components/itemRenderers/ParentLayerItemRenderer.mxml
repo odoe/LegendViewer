@@ -7,12 +7,17 @@
 		<![CDATA[
 			import net.odoe.flexmaptools.components.skins.TriangleButton;
 			import net.odoe.flexmaptools.components.vo.ParentLayerItem;
-
+			
 			private var parentLayer:ParentLayerItem;
-
+			
 			override public function set data(value:Object):void
 			{
 				super.data=value;
+				loadParentLayer();
+			}
+			
+			private function loadParentLayer():void
+			{
 				if (data)
 				{
 					parentLayer=data as ParentLayerItem;
@@ -23,28 +28,29 @@
 					this.currentState="collapsed";
 				}
 			}
-
+			
+			
 			override protected function getCurrentRendererState():String
 			{
 				return currentState;
 			}
-
+			
 			override protected function stateChanged(oldState:String, newState:String, recursive:Boolean):void
 			{
 				super.stateChanged(oldState, newState, recursive);
 				this.invalidateProperties();
 			}
-
+			
 			protected function btnExpand_clickHandler(event:MouseEvent):void
 			{
 				this.currentState=(currentState == "collapsed") ? "expanded" : "collapsed";
 			}
-
+			
 			protected function isLayerVisible_clickHandler(event:MouseEvent):void
 			{
 				parentLayer.layer.visible=isLayerVisible.selected;
 			}
-
+			
 			protected function sliderAlpha_changeHandler(event:Event):void
 			{
 				parentLayer.layer.alpha=sliderAlpha.value;
@@ -52,13 +58,13 @@
 		]]>
 	</fx:Script>
 	<s:states>
-		<s:State name="collapsed"/>
-		<s:State name="expanded"/>
+		<s:State name="collapsed" />
+		<s:State name="expanded" />
 	</s:states>
 	<s:transitions>
 		<s:Transition>
 			<s:Resize target="{contGrp}"
-					  duration="200"/>
+					  duration="200" />
 		</s:Transition>
 	</s:transitions>
 
@@ -68,7 +74,7 @@
 			bottom="2">
 		<s:stroke>
 			<s:SolidColorStroke color="#000000"
-								weight="2"/>
+								weight="2" />
 		</s:stroke>
 	</s:Rect>
 
@@ -83,22 +89,22 @@
 							  paddingBottom="2"
 							  paddingLeft="2"
 							  paddingRight="2"
-							  paddingTop="2"/>
+							  paddingTop="2" />
 		</s:layout>
 		<s:Group>
 			<s:layout>
 				<s:HorizontalLayout gap="2"
-									verticalAlign="middle"/>
+									verticalAlign="middle" />
 			</s:layout>
 			<s:Button id="btnExpand"
 					  rotation.collapsed="180"
 					  buttonMode="true"
 					  skinClass="net.odoe.flexmaptools.components.skins.TriangleButton"
-					  click="btnExpand_clickHandler(event)"/>
+					  click="btnExpand_clickHandler(event)" />
 			<s:CheckBox id="isLayerVisible"
 						selected="false"
-						click="isLayerVisible_clickHandler(event)"/>
-			<s:Label id="lblName"/>
+						click="isLayerVisible_clickHandler(event)" />
+			<s:Label id="lblName" />
 		</s:Group>
 
 		<s:HSlider id="sliderAlpha"
@@ -106,7 +112,7 @@
 				   minimum="0"
 				   maximum="1"
 				   snapInterval="0"
-				   change="sliderAlpha_changeHandler(event)"/>
+				   change="sliderAlpha_changeHandler(event)" />
 		<s:SkinnableContainer id="contGrp"
 							  width="100%"
 							  height.collapsed="0"
@@ -121,7 +127,7 @@
 							 height="100%"
 							 itemRenderer="net.odoe.flexmaptools.components.itemRenderers.LayerItemRenderer">
 					<s:layout>
-						<s:VerticalLayout paddingLeft="15"/>
+						<s:VerticalLayout paddingLeft="15" />
 					</s:layout>
 				</s:DataGroup>
 			</s:Scroller>
