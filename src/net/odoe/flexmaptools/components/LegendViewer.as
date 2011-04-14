@@ -7,6 +7,8 @@ package net.odoe.flexmaptools.components
 	import com.esri.ags.layers.Layer;
 	
 	import mx.collections.ArrayCollection;
+	import mx.collections.Sort;
+	import mx.collections.SortField;
 	
 	import net.odoe.flexmaptools.components.helpers.LayerExtractor;
 	import net.odoe.flexmaptools.components.vo.ParentLayerItem;
@@ -22,6 +24,17 @@ package net.odoe.flexmaptools.components
 		{
 			super();
 			layers=new ArrayCollection();
+			prepareSort();
+		}
+		
+		private function prepareSort():void
+		{
+			sortLegend = true;
+			var sortField:SortField = new SortField();
+			sortField.name = "sortOrder";
+			sortField.numeric = true;
+			sort = new Sort();
+			sort.fields = [sortField];
 		}
 		
 		[SkinPart(required="true")]
@@ -31,12 +44,15 @@ package net.odoe.flexmaptools.components
 		 */
 		public var legendDataGroup:DataGroup;
 		
-		private var _map:Map;
+		public var sortLegend:Boolean;
+		
+		protected var _map:Map;
 		
 		private var layerAdded:NativeSignal;
 		private var layerRemoved:NativeSignal;
 		
 		protected var layers:ArrayCollection;
+		protected var sort:Sort;
 		
 		/**
 		 * Regular Expression to prevent random GraphicsLayers from being added to List.
@@ -98,15 +114,12 @@ package net.odoe.flexmaptools.components
 		{
 			for each (var lyr:Layer in _map.layers)
 			{
-				if (isValidLayer(lyr.name))
+				if (!lyr.map)
 				{
-					if (!lyr.map)
-					{
-						waitForLayer(lyr);
-					}
-					else
-						extractLayerData(lyr);
+					waitForLayer(lyr);
 				}
+				else
+					extractLayerData(lyr);
 			}
 		}
 		
@@ -127,22 +140,50 @@ package net.odoe.flexmaptools.components
 		
 		private function extractLayerData(lyr:Layer):void
 		{
-			if (lyr is ArcGISDynamicMapServiceLayer)
+			if (isValidLayer(lyr.name))
 			{
-				var extract:LayerExtractor=new LayerExtractor();
-				extract.extractReady.add(function(item:ParentLayerItem):void
+				if (lyr is ArcGISDynamicMapServiceLayer)
 				{
-					layers.addItem(item);
-					extract=null;
-				});
-				extract.extractLegend(ArcGISDynamicMapServiceLayer(lyr));
+					var extract:LayerExtractor=new LayerExtractor();
+					extract.extractReady.add(function(item:ParentLayerItem):void
+					{
+						addToLayers(item);
+						extract=null;
+					});
+					extract.extractLegend(ArcGISDynamicMapServiceLayer(lyr));
+				}
+				else
+				{
+					var p_item:ParentLayerItem=new ParentLayerItem();
+					p_item.layer=lyr;
+					addToLayers(p_item);
+				}
 			}
-			else
+		}
+		
+		private function addToLayers(item:ParentLayerItem):void
+		{
+			item.sortOrder = findSortId(item.layer.id);
+			layers.addItem(item);
+		}
+		
+		private function findSortId(layerId:String):int
+		{
+			var length:int = _map.layerIds.length;
+			for (var i:int = 0; i < length; i++)
 			{
-				var p_item:ParentLayerItem=new ParentLayerItem();
-				p_item.layer=lyr;
-				layers.addItem(p_item);
+				if (_map.layerIds[i] == layerId)
+				{
+					return i;
+				}
 			}
+			return 0;
+		}
+		
+		private function sortLayerList():void
+		{
+			layers.sort = sort;
+			layers.refresh();
 		}
 	}
 }
