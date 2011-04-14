@@ -2,10 +2,8 @@ package net.odoe.flexmaptools.components.vo
 {
 	import com.esri.ags.layers.ArcGISDynamicMapServiceLayer;
 	import com.esri.ags.layers.Layer;
-	
-	import flash.events.EventDispatcher;
 
-	public class LayerItem extends EventDispatcher
+	public class LayerItem
 	{
 		public function LayerItem()
 		{

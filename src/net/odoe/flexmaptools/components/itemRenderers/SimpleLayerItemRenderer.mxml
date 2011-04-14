@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				autoDrawBackground="false">
+	<fx:Script>
+		<![CDATA[
+			import com.esri.ags.events.ExtentEvent;
+			
+			import mx.collections.ArrayCollection;
+			
+			import net.odoe.flexmaptools.components.vo.LayerItem;
+			
+			import org.osflash.signals.natives.NativeSignal;
+			
+			private var layerItem:LayerItem;
+			private var extentChanged:NativeSignal;
+			
+			override public function set data(value:Object):void
+			{
+				super.data=value;
+				if (data)
+				{
+					layerItem=data as LayerItem;
+					lblName.text=layerItem.layerName;
+					legendGrp.dataProvider=new ArrayCollection(layerItem.legend);
+					verifyScales(layerItem.parentLayer.map.scale);
+					
+					extentChanged=new NativeSignal(layerItem.parentLayer.map, ExtentEvent.EXTENT_CHANGE, ExtentEvent);
+					extentChanged.add(onExtentChange);
+				}
+			}
+			
+			private function onExtentChange(event:ExtentEvent):void
+			{
+				if (layerItem.parentLayer.map)
+				{
+					verifyScales(layerItem.parentLayer.map.scale);
+				}
+			}
+			
+			private function verifyScales(scale:Number):void
+			{
+				if (layerItem.maxScale == 0 && layerItem.minScale == 0)
+				{
+					// always active
+					this.alpha=1;
+				}
+				else if ((layerItem.minScale == 0 || scale <= layerItem.minScale) && scale >= layerItem.maxScale)
+				{
+					// active
+					this.alpha=1;
+				}
+				else
+				{
+					// inactive
+					this.alpha=0.4;
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:VerticalLayout gap="2"
+						  paddingBottom="2"
+						  paddingLeft="2"
+						  paddingRight="2"
+						  paddingTop="2" />
+	</s:layout>
+	<s:Group width="100%">
+		<s:layout>
+			<s:HorizontalLayout gap="2"
+								verticalAlign="middle" />
+		</s:layout>
+		<s:Label id="lblName" />
+	</s:Group>
+	<s:Group width="100%">
+		<s:DataGroup id="legendGrp"
+					 width="100%"
+					 height="100%"
+					 itemRenderer="net.odoe.flexmaptools.components.itemRenderers.LegendItemRenderer">
+			<s:layout>
+				<s:VerticalLayout />
+			</s:layout>
+		</s:DataGroup>
+	</s:Group>
+</s:ItemRenderer>

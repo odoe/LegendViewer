@@ -1,9 +1,8 @@
 package net.odoe.flexmaptools.components.vo
 {
-	import flash.events.EventDispatcher;
 	import flash.utils.ByteArray;
 
-	public class LegendItem extends EventDispatcher
+	public class LegendItem
 	{
 		public function LegendItem()
 		{

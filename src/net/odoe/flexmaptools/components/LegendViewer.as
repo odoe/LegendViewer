@@ -4,6 +4,7 @@ package net.odoe.flexmaptools.components
     import com.esri.ags.events.LayerEvent;
     import com.esri.ags.events.MapEvent;
     import com.esri.ags.layers.ArcGISDynamicMapServiceLayer;
+    import com.esri.ags.layers.ArcGISTiledMapServiceLayer;
     import com.esri.ags.layers.Layer;
     
     import mx.collections.ArrayCollection;
@@ -121,12 +122,12 @@ package net.odoe.flexmaptools.components
         {
             for each (var lyr:Layer in _map.layers)
             {
-                if (!lyr.map)
+                if (lyr.map)
                 {
-                    waitForLayer(lyr);
+                    extractLayerData(lyr);
                 }
                 else
-                    extractLayerData(lyr);
+                    waitForLayer(lyr);
             }
         }
         
@@ -149,7 +150,7 @@ package net.odoe.flexmaptools.components
         {
             if (isValidLayer(lyr.name))
             {
-                if (lyr is ArcGISDynamicMapServiceLayer)
+                if (isUseableLayer(lyr))
                 {
                     var extract:LayerExtractor=new LayerExtractor();
                     extract.extractReady.add(function(item:ParentLayerItem):void
@@ -157,7 +158,7 @@ package net.odoe.flexmaptools.components
                         addToLayers(item);
                         extract=null;
                     });
-                    extract.extractLegend(ArcGISDynamicMapServiceLayer(lyr));
+                    extract.extractLegend(lyr);
                 }
                 else
                 {
@@ -166,6 +167,12 @@ package net.odoe.flexmaptools.components
                     addToLayers(p_item);
                 }
             }
+        }
+        
+        // do image services have legends?
+        private function isUseableLayer(lyr:Layer):Boolean
+        {
+            return lyr is ArcGISDynamicMapServiceLayer || lyr is ArcGISTiledMapServiceLayer; // || lyr is ArcGISImageServiceLayer 
         }
         
         private function addToLayers(item:ParentLayerItem):void
