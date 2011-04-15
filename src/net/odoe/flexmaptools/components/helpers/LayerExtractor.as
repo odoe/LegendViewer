@@ -59,27 +59,24 @@ package net.odoe.flexmaptools.components.helpers
         
         private function requestLegend(lyr:Layer):void
         {
-            var url:String = getURL(lyr);
-            if (url != "none")
+            var url:String = lyr["url"];
+            var service:HTTPService=getLegendService(url);
+            var resultSignal:NativeSignal=new NativeSignal(service, ResultEvent.RESULT, ResultEvent);
+            var faultSignal:NativeSignal=new NativeSignal(service, FaultEvent.FAULT, FaultEvent);
+            
+            faultSignal.addOnce(function(e:FaultEvent):void
             {
-                var service:HTTPService=getLegendService(url);
-                var resultSignal:NativeSignal=new NativeSignal(service, ResultEvent.RESULT, ResultEvent);
-                var faultSignal:NativeSignal=new NativeSignal(service, FaultEvent.FAULT, FaultEvent);
+                trace("error in calling legend service:", e.message);
+            });
+            
+            resultSignal.addOnce(function(e:ResultEvent):void
+            {
+                var results:Array=JSON.decode(String(e.result)).layers;
                 
-                faultSignal.addOnce(function(e:FaultEvent):void
-                {
-                    trace("error in calling legend service:", e.message);
-                });
-                
-                resultSignal.addOnce(function(e:ResultEvent):void
-                {
-                    var results:Array=JSON.decode(String(e.result)).layers;
-                    
-                    processResults(results, lyr);
-                });
-                
-                service.send({f: "json", pretty: "false"});
-            }
+                processResults(results, lyr);
+            });
+            
+            service.send({f: "json", pretty: "false"});
         }
         
         private function getLegendService(url:String):HTTPService
@@ -150,18 +147,6 @@ package net.odoe.flexmaptools.components.helpers
             var dec:Base64Decoder=new Base64Decoder();
             dec.decode(json);
             return dec.toByteArray();
-        }
-        
-        private function getURL(lyr:Layer):String
-        {
-            if (lyr is ArcGISDynamicMapServiceLayer)
-                return ArcGISDynamicMapServiceLayer(lyr).url;
-            else if (lyr is ArcGISTiledMapServiceLayer)
-                return ArcGISTiledMapServiceLayer(lyr).url;
-            else if (lyr is ArcGISImageServiceLayer)
-                return ArcGISImageServiceLayer(lyr).url;
-            else
-                return "none";
         }
     }
 }

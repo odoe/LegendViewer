@@ -152,13 +152,7 @@ package net.odoe.flexmaptools.components
             {
                 if (isUseableLayer(lyr))
                 {
-                    var extract:LayerExtractor=new LayerExtractor();
-                    extract.extractReady.add(function(item:ParentLayerItem):void
-                    {
-                        addToLayers(item);
-                        extract=null;
-                    });
-                    extract.extractLegend(lyr);
+                    extractUseableLayer(lyr);
                 }
                 else
                 {
@@ -169,10 +163,21 @@ package net.odoe.flexmaptools.components
             }
         }
         
+        private function extractUseableLayer(lyr:Layer):void
+        {
+            var extract:LayerExtractor=new LayerExtractor();
+            extract.extractReady.add(function(item:ParentLayerItem):void
+            {
+                addToLayers(item);
+                extract=null;
+            });
+            extract.extractLegend(lyr);
+        }
+        
         // do image services have legends?
         private function isUseableLayer(lyr:Layer):Boolean
         {
-            return lyr is ArcGISDynamicMapServiceLayer || lyr is ArcGISTiledMapServiceLayer; // || lyr is ArcGISImageServiceLayer 
+            return lyr is ArcGISDynamicMapServiceLayer || lyr is ArcGISTiledMapServiceLayer; // // lyr is FeatureLayer || lyr is ArcGISImageServiceLayer 
         }
         
         private function addToLayers(item:ParentLayerItem):void
