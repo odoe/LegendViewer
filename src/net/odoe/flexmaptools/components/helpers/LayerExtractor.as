@@ -50,7 +50,7 @@ package net.odoe.flexmaptools.components.helpers
         public function extractLegend(lyr:Layer):void
         {
             if (lyr is ArcGISDynamicMapServiceLayer)
-                visibleLayers=ArcGISDynamicMapServiceLayer(lyr).visibleLayers;
+                visibleLayers=(lyr as ArcGISDynamicMapServiceLayer).visibleLayers;
             p_layer=new ParentLayerItem();
             p_layer.layer=lyr;
             

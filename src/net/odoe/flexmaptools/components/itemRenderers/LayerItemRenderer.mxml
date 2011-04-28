@@ -28,7 +28,7 @@
                     layerItem=data as LayerItem;
                     lblName.text=layerItem.layerName;
                     isItemVisible.selected=layerItem.visible;
-                    visibleLayers=ArcGISDynamicMapServiceLayer(layerItem.parentLayer).visibleLayers;
+                    visibleLayers=(layerItem.parentLayer as ArcGISDynamicMapServiceLayer).visibleLayers;
                     legendGrp.dataProvider=new ArrayCollection(layerItem.legend);
                     verifyScales(layerItem.parentLayer.map.scale);
                     
